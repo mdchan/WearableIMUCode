@@ -8,6 +8,18 @@
 #include <utility/imumaths.h>
 
 bool goFlag = false;
+int analogPin1 = 8;
+int analogPin2 = 9;
+int analogPin3 = 10;
+int analogPin4 = 13;
+int analogPin5 = 14;
+int analogPin6 = 15;
+int forceRead1 = 0;
+int forceRead2 = 0;
+int forceRead3 = 0;
+int forceRead4 = 0;
+int forceRead5 = 0;
+int forceRead6 = 0;
 
 
 /* select I2C channel using TCA9548A multiplexer */
@@ -47,6 +59,7 @@ void setup(void)
 //
 pinMode(52,INPUT_PULLUP);
 pinMode(50,OUTPUT);
+digitalWrite(50,HIGH);
 
 
   Wire.begin();
@@ -99,7 +112,14 @@ if (digitalRead(52)==0){
 }
 
 if (digitalRead(50)==0){
-delay(100);
+  delay(100);
+  forceRead1 = analogRead(analogPin1);
+  forceRead2 = analogRead(analogPin2);
+  forceRead3 = analogRead(analogPin3);
+  forceRead4 = analogRead(analogPin4);
+  forceRead5 = analogRead(analogPin5);
+  forceRead6 = analogRead(analogPin6);
+
 //This outputs the IMU readings to Serial at baud rate of 115200
   /* IMU1 */
   tcaselect(0);
@@ -194,8 +214,23 @@ delay(100);
   Serial.print(", ");
   Serial.print(event7.orientation.z, 4);
   Serial.print(",");
-  Serial.println("");
+//  Serial.println("");
 //
+
+//  Print out the Hall readings.
+// Add it to the 1x21 vector output in same CSV form
+  Serial.print(forceRead1);
+  Serial.print('\t');
+  Serial.print(forceRead2);
+  Serial.print(', ');
+  Serial.print(forceRead3);
+  Serial.print(', ');
+  Serial.print(forceRead4);
+  Serial.print(', ');
+  Serial.print(forceRead5);
+  Serial.print(', ');
+  Serial.print(forceRead6);
+  Serial.print("");
   }
 
 /* This is extra stuff for quaternian calculations! */
