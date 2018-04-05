@@ -219,18 +219,19 @@ if (digitalRead(50)==0){
 
 //  Print out the Hall readings.
 // Add it to the 1x21 vector output in same CSV form
+  Serial.print("\t ");
   Serial.print(forceRead1);
-  Serial.print('\t');
+  Serial.print(", ");
   Serial.print(forceRead2);
-  Serial.print(', ');
+  Serial.print(", ");
   Serial.print(forceRead3);
-  Serial.print(', ');
+  Serial.print(", ");
   Serial.print(forceRead4);
-  Serial.print(', ');
+  Serial.print(", ");
   Serial.print(forceRead5);
-  Serial.print(', ');
+  Serial.print(", ");
   Serial.print(forceRead6);
-  Serial.print("");
+  Serial.print("\n");
   }
 
 /* This is extra stuff for quaternian calculations! */
