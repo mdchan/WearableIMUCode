@@ -20,7 +20,8 @@ int forceRead3 = 0;
 int forceRead4 = 0;
 int forceRead5 = 0;
 int forceRead6 = 0;
-
+int curRead = 1000;
+int prevRead = 1000;
 
 /* select I2C channel using TCA9548A multiplexer */
 void tcaselect(uint8_t channel)
@@ -58,8 +59,8 @@ void setup(void)
 //  pinMode(52,HIGH);
 //
 pinMode(52,INPUT_PULLUP);
-pinMode(50,OUTPUT);
-digitalWrite(50,HIGH);
+pinMode(50,INPUT);
+//digitalWrite(50,HIGH);
 
 
   Wire.begin();
@@ -107,12 +108,17 @@ void loop(){
 //  digitalWrite(52, LOW);
 //  delay(100);
 //  if (digitalRead(52)==LOW){
-if (digitalRead(52)==0){
-  digitalWrite(50,LOW);
-}
+//if (digitalRead(52)==0){
+//  digitalWrite(50,LOW);
+//}
 
-if (digitalRead(50)==0){
-  delay(100);
+//This determines what rising edges sent from the Vicon for time syncing purposes.
+//If the previous reading of the digital port is 0 and the next is one, that means that that is a rising edge
+//Takes readings with each rising edge to get same readings as frames.
+
+curRead = digitalRead(50);
+
+if (prevRead == 0 && curRead ==1){
   forceRead1 = analogRead(analogPin1);
   forceRead2 = analogRead(analogPin2);
   forceRead3 = analogRead(analogPin3);
@@ -132,7 +138,7 @@ if (digitalRead(50)==0){
   Serial.print(", ");
   Serial.print(event1.orientation.z, 4);
   Serial.print(", ");
-
+//
   /* IMU2 */
   tcaselect(2);
   sensors_event_t event2;
@@ -145,7 +151,7 @@ if (digitalRead(50)==0){
   Serial.print(event2.orientation.z, 4);
   Serial.print(", ");
 //  Serial.println("");
-
+////
     /* IMU3 */
   tcaselect(3);
   sensors_event_t event3;
@@ -158,10 +164,10 @@ if (digitalRead(50)==0){
   Serial.print(event3.orientation.z, 4);
   Serial.print(", ");
 //  Serial.println("");
-
-////
-////
-//////  /* IMU4 */
+//
+//////
+//////
+////////  /* IMU4 */
   tcaselect(4);
   sensors_event_t event4;
   bno.getEvent(&event4);
@@ -173,9 +179,9 @@ if (digitalRead(50)==0){
   Serial.print(event4.orientation.z, 4);
   Serial.print(", ");
 //  Serial.println("");
-
 //
-////  /* IMU5 */
+////
+//////  /* IMU5 */
   tcaselect(5);
   sensors_event_t event5;
   bno.getEvent(&event5);
@@ -187,9 +193,9 @@ if (digitalRead(50)==0){
   Serial.print(event5.orientation.z, 4);
   Serial.print(", ");
 //  Serial.println("");
-
-////
-////  /* IMU6 */
+//
+//////
+//////  /* IMU6 */
     tcaselect(6);
   sensors_event_t event6;
   bno.getEvent(&event6);
@@ -201,9 +207,9 @@ if (digitalRead(50)==0){
   Serial.print(event6.orientation.z, 4);
   Serial.print(", ");
 //  Serial.println("");
-
-/* This IMU is still broken and being fixed, will have it up and working when I get back */
-////  /* IMU7 */
+//
+///* This IMU is still broken and being fixed, will have it up and working when I get back */
+//////  /* IMU7 */
     tcaselect(7);
   sensors_event_t event7;
   bno.getEvent(&event7);
@@ -215,10 +221,10 @@ if (digitalRead(50)==0){
   Serial.print(event7.orientation.z, 4);
   Serial.print(",");
 //  Serial.println("");
+////
 //
-
-//  Print out the Hall readings.
-// Add it to the 1x21 vector output in same CSV form
+////  Print out the Hall readings.
+//// Add it to the 1x21 vector output in same CSV form
   Serial.print("\t ");
   Serial.print(forceRead1);
   Serial.print(", ");
@@ -233,6 +239,7 @@ if (digitalRead(50)==0){
   Serial.print(forceRead6);
   Serial.print("\n");
   }
+  prevRead = curRead;
 
 /* This is extra stuff for quaternian calculations! */
 ////    imu::Quaternion q = bno.getQuat();
